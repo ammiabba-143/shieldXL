@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const reviewController_js_1 = require("../controllers/reviewController.js");
+const auth_js_1 = require("../middleware/auth.js");
+const router = (0, express_1.Router)();
+router.use(auth_js_1.requireAuth);
+router.use((0, auth_js_1.requireRole)('REVIEWER', 'ADMIN'));
+router.get('/', reviewController_js_1.ReviewController.listPendingReviews);
+router.post('/:id/decision', reviewController_js_1.ReviewController.submitDecision);
+exports.default = router;

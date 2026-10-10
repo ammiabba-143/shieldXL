@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const analysisController_js_1 = require("../controllers/analysisController.js");
+const auth_js_1 = require("../middleware/auth.js");
+const upload_js_1 = require("../middleware/upload.js");
+const router = (0, express_1.Router)();
+router.use(auth_js_1.requireAuth);
+router.post('/', analysisController_js_1.AnalysisController.submit);
+router.post('/upload', upload_js_1.uploadMiddleware.single('media'), analysisController_js_1.AnalysisController.uploadMedia);
+router.get('/', analysisController_js_1.AnalysisController.list);
+router.get('/:id', analysisController_js_1.AnalysisController.getById);
+router.post('/:id/retry', analysisController_js_1.AnalysisController.retry);
+router.post('/:id/manual-result', analysisController_js_1.AnalysisController.submitManualResult);
+exports.default = router;

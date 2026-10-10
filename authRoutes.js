@@ -1,0 +1,26 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const authController_js_1 = require("../controllers/authController.js");
+const socialAuthController_js_1 = require("../controllers/socialAuthController.js");
+const auth_js_1 = require("../middleware/auth.js");
+const rateLimiter_js_1 = require("../middleware/rateLimiter.js");
+const router = (0, express_1.Router)();
+router.post('/register', rateLimiter_js_1.authRateLimiter, authController_js_1.AuthController.register);
+router.post('/login', rateLimiter_js_1.authRateLimiter, authController_js_1.AuthController.login);
+router.post('/logout', authController_js_1.AuthController.logout);
+router.get('/me', auth_js_1.requireAuth, authController_js_1.AuthController.me);
+// Social Media Account Linking & Authorization (Instagram & X)
+router.get('/social/status', socialAuthController_js_1.SocialAuthController.getStatus);
+router.post('/social/connect-direct', auth_js_1.requireAuth, socialAuthController_js_1.SocialAuthController.connectDirect);
+router.post('/social/browser-login', auth_js_1.requireAuth, socialAuthController_js_1.SocialAuthController.browserLogin);
+router.post('/social/save-browser-login', auth_js_1.requireAuth, socialAuthController_js_1.SocialAuthController.saveBrowserLogin);
+router.post('/social/cancel-browser-login', auth_js_1.requireAuth, socialAuthController_js_1.SocialAuthController.cancelBrowserLogin);
+router.post('/social/import-session', auth_js_1.requireAuth, socialAuthController_js_1.SocialAuthController.importSession);
+router.get('/instagram', auth_js_1.optionalAuth, socialAuthController_js_1.SocialAuthController.initiateInstagram);
+router.get('/instagram/callback', socialAuthController_js_1.SocialAuthController.handleInstagramCallback);
+router.get('/x', auth_js_1.optionalAuth, socialAuthController_js_1.SocialAuthController.initiateX);
+router.get('/x/callback', socialAuthController_js_1.SocialAuthController.handleXCallback);
+router.get('/connections', auth_js_1.requireAuth, socialAuthController_js_1.SocialAuthController.getConnections);
+router.delete('/connections/:provider', auth_js_1.requireAuth, socialAuthController_js_1.SocialAuthController.disconnect);
+exports.default = router;
